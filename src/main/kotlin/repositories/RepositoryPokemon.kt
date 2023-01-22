@@ -31,17 +31,15 @@ class RepositoryPokemon(
     }
 
     suspend fun findById(id: String): Pokemon? {
-        val callCache = findByIdInCache(id)
-        return if (callCache == null) {
-            val call = client.getById(id)
-            try {
+        return findByIdInCache(id)
+            ?: try { // if (callCache == null)
+                val call = client.getById(id)
                 listaBusquedas.add(call)
                 call
             } catch (e: Exception) {
                 System.err.println("Excepcion: " + e.message)
                 null
             }
-        } else callCache
     }
 
     private fun refreshCache() {
