@@ -1,13 +1,15 @@
 package repositories
 
+import db.MongoDbManager
 import kotlinx.coroutines.*
 import models.Pokemon
+import org.litote.kmongo.*
 import services.cache.PokemonCache
 import services.ktorFit.KtorFitClient
 
 class RepositoryPokemon(
     private val cachePokemon: PokemonCache
-) {
+) : CrudRepository<Pokemon, String> {
     // Inyectar dependencia
     private val client by lazy { KtorFitClient.instance }
 
@@ -27,19 +29,59 @@ class RepositoryPokemon(
                 pokemon = it.value
             }
         }
+        println("\t✔findByIdInCache")
         return pokemon
     }
 
-    suspend fun findById(id: String): Pokemon? {
-        return findByIdInCache(id)
-            ?: try { // if (callCache == null)
-                val call = client.getById(id)
-                listaBusquedas.add(call)
-                call
-            } catch (e: Exception) {
-                System.err.println("Excepcion: " + e.message)
-                null
-            }
+    private fun findByIdMongo(id: String): Pokemon? {
+        println("\t✔✔findByIdMongo")
+        return MongoDbManager.database.getCollection<Pokemon>().findOneById(id)
+    }
+
+    override suspend fun findById(id: String): Pokemon? {
+        val pokemonInCache = findByIdInCache(id)
+
+        if (pokemonInCache == null) {
+            val pokemonInMongo = findByIdMongo(id)
+            println("\t\t\t" + pokemonInMongo)
+            if (pokemonInMongo == null) {
+                try {
+                    val pokemonInApi = client.getById(id)
+                    // Agregamos en la lista para el cache
+                    listaBusquedas.add(pokemonInApi)
+                    // Agregamos en MongoDB
+                    save(pokemonInApi)
+
+                    println("\t✔✔✔findByIdAPI")
+                    return pokemonInApi
+                } catch (e: Exception) {
+                    System.err.println("Excepcion: " + e.message)
+                    return null
+                }
+            } else return pokemonInMongo
+        } else {
+            return pokemonInCache
+        }
+
+    }
+
+    override fun findAll(): List<Pokemon> {
+        println("\tfindAll")
+        return MongoDbManager.database.getCollection<Pokemon>().find().toList()
+    }
+
+    override fun delete(entity: Pokemon): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun update(entity: Pokemon): Pokemon {
+        TODO("Not yet implemented")
+    }
+
+    override fun save(entity: Pokemon): Pokemon {
+        println("\tSaving $entity")
+        MongoDbManager.database.getCollection<Pokemon>().save(entity)
+        return entity
     }
 
     private fun refreshCache() {
@@ -55,10 +97,10 @@ class RepositoryPokemon(
 
                     listaBusquedas.clear()
 
-                    println("\tCache actualizada: ${cachePokemon.cache.asMap().size}")
+                    println("\tCache actualizada: ${cachePokemon.cache.asMap().size}\n")
                     delay(cachePokemon.refreshTime.toLong())
                 } else {
-                    println("\tCache actual: ${cachePokemon.cache.asMap().size}")
+                    println("\tCache actual: ${cachePokemon.cache.asMap().size}\n")
                     delay(cachePokemon.refreshTime.toLong())
                 }
             }

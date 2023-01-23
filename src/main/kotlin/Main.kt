@@ -1,4 +1,7 @@
+import db.MongoDbManager
 import kotlinx.coroutines.runBlocking
+import models.Pokemon
+import org.litote.kmongo.getCollection
 import repositories.RepositoryPokemon
 import services.cache.PokemonCache
 import kotlin.system.measureTimeMillis
@@ -6,6 +9,8 @@ import kotlin.system.measureTimeMillis
 fun main() = runBlocking {
 
     val repository = RepositoryPokemon(PokemonCache())
+
+    limpiarDatos()
 
     do {
         println("Introduzca un ID/Nombre a buscar: ")
@@ -23,4 +28,10 @@ fun main() = runBlocking {
         }
 
     } while (true)
+}
+
+private fun limpiarDatos() {
+    if (MongoDbManager.database.getCollection<Pokemon>().countDocuments() > 0) {
+        MongoDbManager.database.getCollection<Pokemon>().drop()
+    }
 }

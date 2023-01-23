@@ -1,9 +1,11 @@
 package models
 
 import kotlinx.serialization.Serializable
+import org.bson.codecs.pojo.annotations.BsonId
 
 @Serializable
 data class Pokemon(
+    @BsonId
     val id: String,
     val name: String,
     val base_experience: Int,
