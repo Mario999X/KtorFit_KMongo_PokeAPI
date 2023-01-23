@@ -43,7 +43,7 @@ class RepositoryPokemon(
 
         if (pokemonInCache == null) {
             val pokemonInMongo = findByIdMongo(id)
-            println("\t\t\t" + pokemonInMongo)
+            //println("\t\t\t" + pokemonInMongo) // Tuve que indicar con @BsonId en el modelo para evitar problemas.
             if (pokemonInMongo == null) {
                 try {
                     val pokemonInApi = client.getById(id)
