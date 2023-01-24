@@ -1,7 +1,7 @@
 package repositories
 
 import db.MongoDbManager
-import models.Pokemon
+import models.pokemonIndividual.Pokemon
 import org.litote.kmongo.*
 
 class MongoRepository : CrudRepository<Pokemon, String> {

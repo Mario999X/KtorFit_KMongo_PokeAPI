@@ -1,7 +1,8 @@
 package controllers
 
 import kotlinx.coroutines.*
-import models.Pokemon
+import models.pokemonIndividual.Pokemon
+import models.pokemonListado.Result
 import repositories.CacheRepository
 import repositories.KtorFitRepository
 import repositories.MongoRepository
@@ -21,6 +22,10 @@ class PokemonController(
             }
         }
         return@withContext pokemonSearch
+    }
+
+    suspend fun getAllPokemon(): List<Result>? {
+        return ktorFitRepository.findAll()
     }
 
     suspend fun savePokemon(entity: Pokemon) = withContext(Dispatchers.IO) {

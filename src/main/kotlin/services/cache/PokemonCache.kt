@@ -1,7 +1,7 @@
 package services.cache
 
 import io.github.reactivecircus.cache4k.Cache
-import models.Pokemon
+import models.pokemonIndividual.Pokemon
 import kotlin.time.Duration.Companion.seconds
 
 class PokemonCache {

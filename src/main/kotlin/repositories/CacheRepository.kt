@@ -1,7 +1,7 @@
 package repositories
 
 import kotlinx.coroutines.*
-import models.Pokemon
+import models.pokemonIndividual.Pokemon
 import services.cache.PokemonCache
 
 class CacheRepository(

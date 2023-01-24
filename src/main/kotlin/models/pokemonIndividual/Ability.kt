@@ -1,4 +1,4 @@
-package models
+package models.pokemonIndividual
 
 import kotlinx.serialization.Serializable
 

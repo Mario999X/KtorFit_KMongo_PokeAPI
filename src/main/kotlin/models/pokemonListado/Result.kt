@@ -1,9 +1,9 @@
-package models
+package models.pokemonListado
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AbilityX(
+data class Result(
     val name: String,
     val url: String
 )
