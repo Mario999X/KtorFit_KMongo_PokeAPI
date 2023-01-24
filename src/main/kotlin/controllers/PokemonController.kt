@@ -20,38 +20,31 @@ class PokemonController(
                 pokemonSearch = ktorFitRepository.findById(id)
             }
         }
-        if (pokemonSearch != null) {
-            // Al obtenerlo, lo almacenamos tanto en cache como en Mongo
-            launch {
-                cacheRepository.save(pokemonSearch)
-            }
-
-            launch {
-                mongoRepository.save(pokemonSearch)
-            }
-
-            joinAll()
-        }
         return@withContext pokemonSearch
     }
 
-    suspend fun deletePokemonById(entity: Pokemon) = withContext(Dispatchers.IO) {
+    suspend fun savePokemon(entity: Pokemon) = withContext(Dispatchers.IO) {
+        // Lo almacenamos tanto en cache como en Mongo
         launch {
-            deletePokemonByIdCache(entity)
+            cacheRepository.save(entity)
         }
+
         launch {
-            deletePokemonByIdMongo(entity)
+            mongoRepository.save(entity)
         }
 
         joinAll()
     }
 
-    private fun deletePokemonByIdCache(entity: Pokemon): Boolean {
-        return cacheRepository.delete(entity)
-    }
+    suspend fun deletePokemonById(entity: Pokemon) = withContext(Dispatchers.IO) {
+        // Lo eliminamos tanto en cache como en Mongo
+        launch {
+            cacheRepository.delete(entity)
+        }
+        launch {
+            mongoRepository.delete(entity)
+        }
 
-    private fun deletePokemonByIdMongo(entity: Pokemon): Boolean {
-        return mongoRepository.delete(entity)
+        joinAll()
     }
-
 }

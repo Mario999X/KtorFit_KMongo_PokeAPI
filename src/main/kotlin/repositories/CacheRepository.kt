@@ -37,10 +37,10 @@ class CacheRepository(
     override fun delete(entity: Pokemon): Boolean {
         println("\t👉delete cache")
         var existe = false
-        val pok = cachePokemon.cache.asMap()[entity.id]
-        if (pok != null) {
+        val pokemon = cachePokemon.cache.asMap()[entity.id]
+        if (pokemon != null) {
             // Por como lo tengo programado, tengo que eliminar tambien los datos que coincidan en la lista de busquedas
-            listaBusquedas.removeIf { it.id == pok.id }
+            listaBusquedas.removeIf { it.id == pokemon.id }
             cachePokemon.cache.invalidate(entity.id)
             existe = true
         }
@@ -62,7 +62,7 @@ class CacheRepository(
 
         refreshJob = CoroutineScope(Dispatchers.IO).launch {
             while (true) {
-                println("\tActualizando cache...")
+                println("\tComprobando cache...")
                 if (listaBusquedas.isNotEmpty()) {
                     listaBusquedas.forEach {
                         cachePokemon.cache.put(it.id, it)

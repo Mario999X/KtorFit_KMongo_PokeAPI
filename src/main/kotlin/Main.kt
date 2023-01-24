@@ -7,7 +7,6 @@ import repositories.CacheRepository
 import repositories.KtorFitRepository
 import repositories.MongoRepository
 import services.cache.PokemonCache
-import kotlin.system.exitProcess
 import kotlin.system.measureTimeMillis
 
 private val cache = PokemonCache()
@@ -32,14 +31,17 @@ fun main() = runBlocking {
         val data2 = readln()
 
         measureTimeMillis {
+
             if (data == "1") {
                 searchPokemon(data2)
+
             } else if (data == "2") {
                 val pokemon = searchPokemon(data2)
+
                 if (pokemon != null) {
-                    controller.deletePokemonById(pokemon)
+                    deletePokemon(pokemon)
                 }
-            } else exitProcess(1)
+            } else System.err.println("Fallo en la lectura de teclado...")
 
         }.also {
             println("Tiempo de ejecucion: $it ms")
@@ -48,12 +50,26 @@ fun main() = runBlocking {
     } while (true)
 }
 
-private suspend fun searchPokemon(id: String): Pokemon? {
+
+private suspend fun deletePokemon(entity: Pokemon) {
+    controller.deletePokemonById(entity)
+}
+
+suspend fun searchPokemon(id: String): Pokemon? {
     val pokemonData = controller.getPokemonById(id)
 
     if (pokemonData == null) {
         System.err.println("ID/NOMBRE NO EXISTE: $id")
-    } else println(pokemonData)
+    } else {
+        controller.savePokemon(pokemonData)
+        println(
+            """
+            -----------
+            $pokemonData
+            -----------
+        """.trimIndent()
+        )
+    }
 
     return pokemonData
 }
