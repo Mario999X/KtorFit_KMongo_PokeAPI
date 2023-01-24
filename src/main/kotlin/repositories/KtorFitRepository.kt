@@ -12,7 +12,7 @@ class KtorFitRepository {
     suspend fun findAll(): List<Result>? {
         return try {
             val listado = client.getAll()
-            println("\t👁‍👁‍👁findAll")
+            println("\t📖📖📖findAll")
             listado.results
         } catch (e: Exception) {
             System.err.println("Excepcion: " + e.message)
@@ -23,7 +23,7 @@ class KtorFitRepository {
     suspend fun findById(id: String): Pokemon? {
         return try {
             val pokemonInApi = client.getById(id)
-            println("\t🔎🔎🔎findByIdAPI")
+            println("\t🔎🔎🔎findById")
             pokemonInApi
         } catch (e: Exception) {
             System.err.println("Excepcion: " + e.message)

@@ -24,7 +24,15 @@ class PokemonController(
         return@withContext pokemonSearch
     }
 
-    suspend fun getAllPokemon(): List<Result>? {
+    fun getAllPokemonCache(): List<Pokemon> {
+        return cacheRepository.findAll()
+    }
+
+    fun getAllPokemonMongo(): List<Pokemon> {
+        return mongoRepository.findAll()
+    }
+
+    suspend fun getAllPokemonAPI(): List<Result>? {
         return ktorFitRepository.findAll()
     }
 

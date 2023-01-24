@@ -25,7 +25,9 @@ fun main() = runBlocking {
             Introduzca la opcion:
             1. Buscar Pokemon
             2. Eliminar Pokemon
-            3. Obtener todos los Pokemon
+            3. Obtener todos los Pokemon / API
+            4. Obtener todos los Pokemon / MONGO
+            5. Obtener todos los Pokemon / CACHE
         """.trimIndent()
         )
         val data = readln()
@@ -34,38 +36,35 @@ fun main() = runBlocking {
             println("Introduzca un ID/Nombre: ")
             data2 = readln()
 
-        } else {
-            measureTimeMillis {
-
-                if (data == "1") {
-                    searchPokemon(data2)
-
-                } else if (data == "2") {
-                    val pokemon = searchPokemon(data2)
-
-                    if (pokemon != null) {
-                        deletePokemon(pokemon)
-                    }
-                } else if (data == "3") {
-                    obtainAllPokemon()
-                } else System.err.println("Fallo en la lectura de teclado...")
-
-            }.also {
-                println("Tiempo de ejecucion: $it ms")
-            }
         }
 
+        measureTimeMillis {
+
+            if (data == "1") {
+                searchPokemon(data2)
+
+            } else if (data == "2") {
+                val pokemon = searchPokemon(data2)
+
+                if (pokemon != null) {
+                    controller.deletePokemonById(pokemon)
+                }
+            } else if (data == "3") {
+                println(controller.getAllPokemonAPI())
+
+            } else if (data == "4") {
+                println(controller.getAllPokemonMongo())
+
+            } else if (data == "5") {
+                println(controller.getAllPokemonCache())
+
+            } else System.err.println("Fallo en la lectura de teclado...")
+
+        }.also {
+            println("Tiempo de ejecucion: $it ms")
+        }
 
     } while (true)
-}
-
-private suspend fun obtainAllPokemon() {
-    val listado = controller.getAllPokemon()
-    println(listado)
-}
-
-private suspend fun deletePokemon(entity: Pokemon) {
-    controller.deletePokemonById(entity)
 }
 
 suspend fun searchPokemon(id: String): Pokemon? {

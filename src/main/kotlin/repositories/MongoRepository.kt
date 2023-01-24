@@ -7,11 +7,12 @@ import org.litote.kmongo.*
 class MongoRepository : CrudRepository<Pokemon, String> {
 
     override fun findAll(): List<Pokemon> {
-        TODO("Not yet implemented")
+        println("\t📖📖findAll")
+        return MongoDbManager.database.getCollection<Pokemon>().find().toList()
     }
 
     override fun delete(entity: Pokemon): Boolean {
-        println("\t👉👉deleteMongo")
+        println("\t👉👉delete")
         var existe = false
         if (MongoDbManager.database.getCollection<Pokemon>().deleteOneById(entity.id).equals(entity)) {
             existe = true
@@ -30,7 +31,7 @@ class MongoRepository : CrudRepository<Pokemon, String> {
     }
 
     override suspend fun findById(id: String): Pokemon? {
-        println("\t🔎🔎findByIdMongo")
+        println("\t🔎🔎findById")
         return MongoDbManager.database.getCollection<Pokemon>().findOneById(id)
     }
 }

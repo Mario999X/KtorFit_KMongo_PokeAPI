@@ -9,8 +9,8 @@ private val log = KotlinLogging.logger {}
 
 object MongoDbManager {
 
-    private lateinit var mongoClient: MongoClient
-    lateinit var database: MongoDatabase
+    private var mongoClient: MongoClient
+    var database: MongoDatabase
 
     init {
         log.debug("Inicializando conexion a MongoDB")

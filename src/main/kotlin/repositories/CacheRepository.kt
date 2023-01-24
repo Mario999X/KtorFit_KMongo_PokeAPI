@@ -25,17 +25,17 @@ class CacheRepository(
                 pokemon = it.value
             }
         }
-        println("\t🔎findByIdInCache")
+        println("\t🔎findById")
         return pokemon
     }
 
     override fun findAll(): List<Pokemon> {
-        println("\tfindAll")
+        println("\t📖findAll")
         return cachePokemon.cache.asMap().values.toList()
     }
 
     override fun delete(entity: Pokemon): Boolean {
-        println("\t👉delete cache")
+        println("\t👉delete")
         var existe = false
         val pokemon = cachePokemon.cache.asMap()[entity.id]
         if (pokemon != null) {
