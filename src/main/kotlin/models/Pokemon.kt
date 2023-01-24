@@ -11,9 +11,12 @@ data class Pokemon(
     val base_experience: Int,
     val height: Int,
     val order: Int,
-    val weight: Int
-){
+    val weight: Int,
+    val abilities: List<Ability>
+
+) {
     override fun toString(): String {
-        return "Pokemon(id=$id, name='$name', baseExperience=$base_experience, height=$height, order=$order, weight=$weight)"
+        return "Pokemon(id=$id, name='$name', baseExperience=$base_experience, height=$height, order=$order, weight=$weight, lista habilidades: \n$abilities)"
     }
+
 }
